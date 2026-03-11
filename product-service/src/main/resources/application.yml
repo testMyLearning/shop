@@ -1,0 +1,9 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: product-service
+  config:
+    import:
+      - optional:file:/common-yml/application-redis.yml
