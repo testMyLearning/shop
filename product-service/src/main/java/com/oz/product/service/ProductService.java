@@ -2,10 +2,12 @@ package com.oz.product.service;
 
 import com.oz.common.dto.PageResponse;
 import com.oz.product.dto.ProductDto;
+import com.oz.product.dto.UpdateProductDto;
 import com.oz.product.entity.Product;
 import com.oz.product.enums.SortField;
 import com.oz.product.mapper.ProductMapper;
 import com.oz.product.repository.ProductRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -86,5 +89,29 @@ public class ProductService {
 
     }
 
+    @Transactional()
+    public void createProduct(@Valid ProductDto productDto) {
+        Product entity = productMapper.toEntity(productDto);
+        productRepository.save(entity);
+        clearRedis();
+    }
+    @Transactional
+    public void deleteByProductId(UUID uuid) {
+        productRepository.deleteById(uuid);
+        clearRedis();
+    }
 
+    @Transactional
+    public void updateProducts(@Valid UpdateProductDto productDto, UUID id) {
+        Product findProduct = productRepository.findByIdWithLock(id)
+                .orElseThrow(()-> new RuntimeException("Не найден продукт"));
+        productMapper.updateProductFromDTO(productDto,findProduct);
+        clearRedis();
+    }
+
+    private void clearRedis(){
+        redisTemplate.keys("product:*").forEach(k->{
+            redisTemplate.delete(k);
+        });
+    }
 }
