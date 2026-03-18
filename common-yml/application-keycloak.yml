@@ -1,0 +1,9 @@
+keycloak:
+  url: http://keycloak:8082
+  realm: shop-realm
+  admin:
+    client-id: admin-cli
+    client-secret: vrpvzPiH36DZXorytPokmQhkHfx2cyFo  # через secrets в k8s
+  client:
+    client-id: shop-client
+    client-secret: 4ksvyGu1eI2ydTdlxp6JtNavSkm51pbJ

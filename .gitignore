@@ -39,3 +39,4 @@ build/
 .idea
 .gigaide
 .gitignore
+application-keycloak.yml

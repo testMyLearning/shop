@@ -1,0 +1,29 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: order-service
+  config:
+    import:
+      - optional:file:common-yml/application-keycloak.yml
+      - optional:file:common-yml/application-postgres.yml
+
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      retries: 3
+      properties:
+        retry.backoff.ms: 1000
+        delivery.timeout.ms: 120000
+        enable.idempotence : true
+      acks: all
+    listener:
+      concurrency: 3
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8082/realms/shop-realm
+          jwk-set-uri: http://keycloak:8082/realms/shop-realm/protocol/openid-connect/certs
+

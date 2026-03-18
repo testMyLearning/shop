@@ -3,14 +3,19 @@ package com.oz.product.entity;
 import com.oz.common.enums.Color;
 import com.oz.product.enums.TypeOfThing;
 import jakarta.persistence.*;
-import org.springframework.data.annotation.Id;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 @Entity
-@Table(name = "products")
+@Table(name = "products", indexes = {
+        @Index(name = "idx_products_name", columnList = "name"),
+        @Index(name = "idx_products_price", columnList = "price"),
+        @Index(name = "idx_products_color", columnList = "color"),
+        @Index(name = "idx_products_typeOfThing", columnList = "typeOfThing")
+})
 public class Product extends com.oz.common.entity.Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

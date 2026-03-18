@@ -1,9 +1,12 @@
 package com.oz.common.entity;
 
 import com.oz.common.enums.Color;
+import jakarta.persistence.MappedSuperclass;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@MappedSuperclass
 public abstract class Product {
     protected String name;
     protected Long count;
@@ -50,5 +53,13 @@ public abstract class Product {
 
     public void setDateOfEntry(LocalDate dateOfEntry) {
         this.dateOfEntry = dateOfEntry;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

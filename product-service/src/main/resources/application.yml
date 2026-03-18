@@ -1,9 +1,18 @@
 server:
-  port: 8081
+  port: 8084
 
 spring:
   application:
     name: product-service
   config:
     import:
-      - optional:file:/common-yml/application-redis.yml
+      - optional:file:common-yml/application-redis.yml
+      - optional:file:common-yml/application-keycloak.yml
+      - optional:file:common-yml/application-postgres.yml
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8082/realms/shop-realm
+          jwk-set-uri: http://keycloak:8082/realms/shop-realm/protocol/openid-connect/certs

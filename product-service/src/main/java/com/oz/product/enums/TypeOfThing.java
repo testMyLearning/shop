@@ -13,7 +13,7 @@ public enum TypeOfThing {
 
     }
     public String getName(){
-        return  "Тип вещи: "+name;
+        return  name;
     }
 
     public static TypeOfThing fromName(String name){

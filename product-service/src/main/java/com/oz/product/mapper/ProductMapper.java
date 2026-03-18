@@ -3,14 +3,15 @@ package com.oz.product.mapper;
 import com.oz.product.dto.ProductDto;
 import com.oz.product.dto.UpdateProductDto;
 import com.oz.product.entity.Product;
+import com.oz.product.enums.TypeOfThing;
 import org.mapstruct.*;
 
 import java.util.List;
 
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",imports = {TypeOfThing.class})
 public interface ProductMapper {
-    @Mapping(target = "color", source = "c")
+    @Mapping(target = "color", source = "color")
     @Mapping(target = "typeOfThing", expression = "java(product.getTypeOfThing().getName())")
     ProductDto toDto(Product product);
 

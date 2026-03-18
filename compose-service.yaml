@@ -1,0 +1,43 @@
+networks:
+  net:
+    external: true
+    name: network
+
+
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - net
+
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - net
+
+  product-service:
+    build:
+      context: .
+      dockerfile: product-service/Dockerfile
+    ports:
+      - "8084:8084"  # если внутри приложение слушает 8084
+    networks:
+      - net
+
+# order-service:
+#   build:
+#     context: .
+#     dockerfile: order-service/Dockerfile
+#   ports:
+#     - "8083:8083"
+#   depends_on:
+#     - keycloak
+#     - redis
