@@ -11,7 +11,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class OrderEventListener {
+public class OrderCreatedEventListener {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final OrderOperationService orderService;
@@ -21,7 +21,7 @@ public class OrderEventListener {
         log.info("Transaction committed. Sending event to Kafka for order: {}", event.getOrderId());
 
         // Теперь отправка безопасна: данные точно есть в БД
-        kafkaTemplate.send("order-created", event)
+        kafkaTemplate.send("order-created",event.getOrderId().toString(), event)
                 .whenComplete((result, ex) -> {
                     if (ex == null) {
                         log.info("Доставлено в топик: {}, партиция: {}, офсет: {}",

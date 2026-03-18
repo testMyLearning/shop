@@ -7,3 +7,10 @@ keycloak:
   client:
     client-id: shop-client
     client-secret: 4ksvyGu1eI2ydTdlxp6JtNavSkm51pbJ
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8082/realms/shop-realm
+          jwk-set-uri: http://keycloak:8082/realms/shop-realm/protocol/openid-connect/certs

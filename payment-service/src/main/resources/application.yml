@@ -1,0 +1,11 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: payment-service
+  config:
+    import:
+      - optional:file:common-yml/application-kafka.yml
+      - optional:file:common-yml/application-keycloak.yml
+      - optional:file:common-yml/application-postgres.yml

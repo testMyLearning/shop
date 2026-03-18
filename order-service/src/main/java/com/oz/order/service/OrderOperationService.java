@@ -19,17 +19,13 @@ public class OrderOperationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW) // Важно: новая транзакция!
     public void cancelOrder(UUID orderId, String reason) {
-        orderRepository.findById(orderId).ifPresent(order -> {
-            order.setStatus(OrderStatus.CANCELLED);
+        orderRepository.deleteOrderById(orderId);
             log.warn("Заказ {} отменен. Причина: {}", orderId, reason);
-            orderRepository.save(order);
-        });
-    }
+
+        };
+
     @Transactional
     public void updateOrderStatus(UUID orderId, String status) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-        order.setStatus(OrderStatus.valueOf(status));
-        orderRepository.save(order);
+        orderRepository.updateStatus(orderId, OrderStatus.valueOf(status));
     }
 }

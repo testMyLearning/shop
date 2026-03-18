@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class OrderResponseListener {
+public class InventoryOrderResponseListener {
 
     private final OrderOperationService orderOperationService;
     private final OrderRepository orderRepository;
@@ -29,7 +29,7 @@ public class OrderResponseListener {
                 order.getId(),
                 order.getUserId(),
                 order.getTotalPrice());
-                kafkaTemplate.send("payment-request", paymentRequest);
+                kafkaTemplate.send("payment-request",event.id().toString(), paymentRequest);
         log.info("Запрос на оплату отправлен для заказа: {}", order.getId());
 
     }

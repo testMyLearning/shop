@@ -21,13 +21,13 @@ public class PaymentEventListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleSuccessPaymentEvent( PaymentRequestEvent payment) {
 
-        kafkaTemplate.send("payment-success",payment);
+        kafkaTemplate.send("payment-success",payment.orderId().toString(),payment);
         log.info("заказ оплачен и отправлен в топик payment-success");
 
     }
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onPaymentFailure(PaymentFailed internalEvent) {
-        kafkaTemplate.send("payment-failed"
+        kafkaTemplate.send("payment-failed",internalEvent.uuid().toString(),
                 , new PaymentFailedEvent(internalEvent.uuid(), "Ошибка в классе слушателя платежей"));
     }
 }

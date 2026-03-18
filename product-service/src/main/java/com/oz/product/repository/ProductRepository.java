@@ -22,4 +22,6 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
     @Modifying
     @Query("UPDATE Product p SET p.count = p.count - :quantity WHERE p.id = :id AND p.count >= :quantity")
     int decrementStock(@Param("id") UUID productId, @Param("quantity") Integer quantity);
+
+
 }

@@ -9,10 +9,5 @@ spring:
       - optional:file:common-yml/application-redis.yml
       - optional:file:common-yml/application-keycloak.yml
       - optional:file:common-yml/application-postgres.yml
+      - optional:file:common-yml/application-kafka.yml
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://keycloak:8082/realms/shop-realm
-          jwk-set-uri: http://keycloak:8082/realms/shop-realm/protocol/openid-connect/certs
