@@ -7,13 +7,12 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class OrderCreatedEvent {
-    private UUID orderId;
-    private String userId;
-    private UUID productId;
-    private Integer quantity;
-    private BigDecimal totalPrice;
-}
+
+public record OrderCreatedEvent (
+   UUID orderId,
+String userId,
+  UUID productId,
+   Integer quantity,
+ BigDecimal totalPrice
+)
+{}

@@ -1,16 +1,16 @@
-package com.oz.payment.service;
+package com.oz.payment;
 
-import com.oz.common.dto.OrderCreatedEvent;
+
 import com.oz.common.dto.PaymentFailed;
 import com.oz.common.dto.PaymentRequestEvent;
-import com.oz.common.dto.PaymentSuccess;
+
 import com.oz.payment.Payment;
 import com.oz.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,10 +37,14 @@ public class PaymentService {
                 payment.setOrderId(event.orderId());
                 payment.setUserId(event.userId());
                 payment.setPrice(event.price());
+                payment.setProductId(event.productId());
+                payment.setQuantity(event.quantity());
                 repository.save(payment);
                 eventPublisher.publishEvent(event);
+                log.info("публикуем событие о успешной оплате");
             } else {
-                eventPublisher.publishEvent((new PaymentFailed(event.orderId())));
+                log.info("публикуем событие о не успешной оплате");
+                eventPublisher.publishEvent((new PaymentFailed(event.orderId(),event.productId(),event.quantity())));
             }
         } catch (InterruptedException e) {
             log.error("ошибка в обработке платежа по причине : {}", e.getMessage());

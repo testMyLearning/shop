@@ -18,10 +18,10 @@ public class OrderCreatedEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleOrderCreated(OrderCreatedEvent event) {
-        log.info("Transaction committed. Sending event to Kafka for order: {}", event.getOrderId());
+        log.info("Transaction committed. Sending event to Kafka for order: {}", event.orderId());
 
         // Теперь отправка безопасна: данные точно есть в БД
-        kafkaTemplate.send("order-created",event.getOrderId().toString(), event)
+        kafkaTemplate.send("order-created",event.orderId().toString(), event)
                 .whenComplete((result, ex) -> {
                     if (ex == null) {
                         log.info("Доставлено в топик: {}, партиция: {}, офсет: {}",
@@ -30,8 +30,8 @@ public class OrderCreatedEventListener {
                                 result.getRecordMetadata().offset());
                         // Здесь можно реализовать логику досылки или отмены заказа
                     } else {
-                        log.error("Failed to send Kafka message for order {}", event.getOrderId(), ex);
-                        orderService.cancelOrder(event.getOrderId(),"Ошибка отправки сообщения в кафку на оплату");
+                        log.error("Failed to send Kafka message for order {}", event.orderId(), ex);
+                        orderService.cancelOrder(event.orderId(),"Ошибка отправки сообщения в кафку на оплату");
 
                     }
                 });

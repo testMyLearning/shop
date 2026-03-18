@@ -26,8 +26,11 @@ public class PaymentEventListener {
 
     }
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void onPaymentFailure(PaymentFailed internalEvent) {
-        kafkaTemplate.send("payment-failed",internalEvent.uuid().toString(),
-                , new PaymentFailedEvent(internalEvent.uuid(), "Ошибка в классе слушателя платежей"));
+    public void onPaymentFailure(PaymentFailed event) {
+        kafkaTemplate.send("payment-failed",event.uuid().toString()
+                , new PaymentFailedEvent(event.uuid(),
+                        event.productId(),
+                        event.quantity(),
+                        "Ошибка в классе слушателя платежей"));
     }
 }

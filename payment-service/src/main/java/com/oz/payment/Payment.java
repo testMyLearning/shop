@@ -19,4 +19,6 @@ public class Payment {
     private UUID orderId;
     private String userId;
     private BigDecimal price;
+    private UUID productId;
+    private int quantity;
 }

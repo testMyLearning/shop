@@ -25,7 +25,7 @@ public class OrderOperationService {
         };
 
     @Transactional
-    public void updateOrderStatus(UUID orderId, String status) {
-        orderRepository.updateStatus(orderId, OrderStatus.valueOf(status));
+    public void updateOrderStatus(UUID orderId, OrderStatus status) {
+        orderRepository.updateStatus(orderId, status);
     }
 }

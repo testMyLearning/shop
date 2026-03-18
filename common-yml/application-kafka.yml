@@ -2,18 +2,33 @@ spring:
   kafka:
     bootstrap-servers: kafka:9092
     producer:
+      batch-size: 16384
+      buffer-memory: 33554432
+      # Указываем, что ключ — строка, а значение — JSON
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
       retries: 3
       properties:
-        retry.backoff.ms: 1000
-        delivery.timeout.ms: 120000
         enable.idempotence: true
-      acks: all
-    listener:
-      concurrency: 3
-    batch-size: 16384
-    buffer-memory: 33554432
-    linger.ms: 10
+        # Эта настройка важна, чтобы Jackson не добавлял лишние заголовки типов
+        spring.json.add.type.headers: true
+        linger.ms: 10
+
     consumer:
       group-id: ${spring.application.name}-group
       auto-offset-reset: earliest
-      enable-auto-commit: true
+      # Указываем, как читать JSON обратно в объект
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        # Доверяем всем твоим пакетам, чтобы разрешить десериализацию
+        spring.json.trusted.packages: "com.oz.*"
+
+
+
+
+    listener:
+      concurrency: 3
+    # Эти настройки должны быть ВНУТРИ секции producer или consumer (в зависимости от версии Spring)
+    # Но обычно их кладут в producer:

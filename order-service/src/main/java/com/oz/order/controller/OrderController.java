@@ -30,6 +30,12 @@ public class OrderController {
         Order order = orderService.createOrder(userId, request);
         return ResponseEntity.ok(order);
     }
+
+    @GetMapping("/status/{id}")
+    public ResponseEntity<Order> getOrder(@PathVariable("id")UUID uuid){
+    Order order = orderService.findById(uuid);
+    return ResponseEntity.ok(order);
+    }
 //
 //    @GetMapping("/{id}")
 //    @PreAuthorize("hasAnyRole('buyer', 'seller', 'admin')")

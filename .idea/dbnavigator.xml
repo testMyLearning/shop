@@ -6,7 +6,7 @@
   </component>
   <component name="DBNavigator.Project.DataEditorManager">
     <record-view-column-sorting-type value="BY_INDEX" />
-    <value-preview-text-wrapping value="true" />
+    <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
   <component name="DBNavigator.Project.DatabaseBrowserManager">
@@ -24,14 +24,21 @@
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" object-ref="schemas/public/tables/products" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.user_profiles" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.orders" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.products" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.payment" active-filter-id="EMPTY_FILTER" />
+  </component>
+  <component name="DBNavigator.Project.ExecutionManager">
+    <retain-sticky-names value="false" />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />

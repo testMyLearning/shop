@@ -3,7 +3,6 @@ networks:
     external: true
     name: network
 
-
 services:
   gateway:
     build:
@@ -20,24 +19,49 @@ services:
       dockerfile: user-service/Dockerfile
     ports:
       - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database_all:5555/postgres_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     networks:
       - net
+
 
   product-service:
     build:
       context: .
       dockerfile: product-service/Dockerfile
     ports:
-      - "8084:8084"  # если внутри приложение слушает 8084
+      - "8084:8084"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database_all:5555/postgres_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     networks:
       - net
 
-# order-service:
-#   build:
-#     context: .
-#     dockerfile: order-service/Dockerfile
-#   ports:
-#     - "8083:8083"
-#   depends_on:
-#     - keycloak
-#     - redis
+
+
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    ports:
+      - "8085:8085"
+    environment: # Теперь отступ правильный (2 пробела от края сервиса)
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database_all:5555/postgres_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    networks:
+      - net
+
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: payment-service/Dockerfile
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database_all:5555/postgres_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    networks:
+      - net
+

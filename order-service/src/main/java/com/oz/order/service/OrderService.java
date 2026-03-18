@@ -8,13 +8,11 @@ import com.oz.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+
 
 @Service
 @Slf4j
@@ -54,4 +52,8 @@ public class OrderService {
         return order;
     }
 
+    public Order findById(UUID uuid) {
+        return orderRepository.findByIdWithStatusCompleted(uuid)
+                .orElseThrow(()->new RuntimeException("ошибка в поиске заказа со статусом completed"));
+    }
 }
