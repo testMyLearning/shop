@@ -6,6 +6,7 @@ import com.oz.common.dto.PaymentFailed;
 import com.oz.common.dto.PaymentRequestEvent;
 
 import com.oz.payment.Payment;
+import com.oz.payment.adapter.BankProcessor;
 import com.oz.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.stream.Stream;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class PaymentService {
 
     private final ApplicationEventPublisher eventPublisher;
     private final PaymentRepository repository;
+    private final BankProcessor bankProcessor;
     @KafkaListener(topics = "payment-request")
     @Transactional
     @LogExecutionTime
@@ -30,11 +34,8 @@ public class PaymentService {
         log.info("Оплата по заказу: {}", event.orderId());
 
         try {
-            // 1. Проверяем баланс пользователя (здесь была бы логика)
-            // 2. Списываем деньги
-            log.info("проверяем баланс пользователя");
-            Thread.sleep(2000);
-            if (Math.random() > 0.2) {
+            boolean isSuccess = bankProcessor.checkBalance(event.userId(),event.price());
+            if (isSuccess) {
                 Payment payment = new Payment();
                 payment.setOrderId(event.orderId());
                 payment.setUserId(event.userId());
@@ -48,8 +49,23 @@ public class PaymentService {
                 log.info("публикуем событие о не успешной оплате");
                 eventPublisher.publishEvent((new PaymentFailed(event.orderId(),event.productId(),event.quantity())));
             }
-        } catch (InterruptedException e) {
+        } catch (RuntimeException e) {
             log.error("ошибка в обработке платежа по причине : {}", e.getMessage());
+        }
+    }
+    @Transactional(readOnly = true) // Важно! Сессия должна быть открыта
+    public void processHugeAmountOfData() {
+        try (Stream<Payment> paymentStream = repository.streamAllPayments()) {
+            // Здесь Java использует Итератор "под капотом"
+            paymentStream.forEach(payment -> {
+                // Обрабатываем по одному, не загружая 1 000 000 записей в RAM
+//                Если внутри filter или map тебе нужно вызвать:
+//                Внешний микросервис по API.
+//                Сложную библиотеку (например, расчет траектории, криптографию или PDF-генератор).
+//                Метод, который есть только в Java-коде твоего проекта.
+//                Пример: filter(payment -> internalRiskService.isFraud(payment)) — база данных не знает о твоем InternalRiskService.
+                log.info("Processing payment: {}", payment.getId());
+            });
         }
     }
 
