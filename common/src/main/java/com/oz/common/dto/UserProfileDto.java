@@ -1,4 +1,4 @@
-package com.oz.dto;
+package com.oz.common.dto;
 
 import lombok.Data;
 import java.time.LocalDateTime;

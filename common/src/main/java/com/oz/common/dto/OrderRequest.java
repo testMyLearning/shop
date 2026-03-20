@@ -1,4 +1,4 @@
-package com.oz.order.dto;
+package com.oz.common.dto;
 
 import java.math.BigDecimal;
 import java.util.UUID;

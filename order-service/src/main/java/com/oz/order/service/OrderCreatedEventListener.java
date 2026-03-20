@@ -31,7 +31,7 @@ public class OrderCreatedEventListener {
                         // Здесь можно реализовать логику досылки или отмены заказа
                     } else {
                         log.error("Failed to send Kafka message for order {}", event.orderId(), ex);
-                        orderService.cancelOrder(event.orderId(),"Ошибка отправки сообщения в кафку на оплату");
+                        orderService.cancelOrder(event.orderId(),"OUT_OF_STOCK");
 
                     }
                 });

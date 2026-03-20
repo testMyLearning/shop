@@ -1,6 +1,7 @@
 package com.oz.payment;
 
 
+import com.oz.common.aop.LogExecutionTime;
 import com.oz.common.dto.PaymentFailed;
 import com.oz.common.dto.PaymentRequestEvent;
 
@@ -24,6 +25,7 @@ public class PaymentService {
     private final PaymentRepository repository;
     @KafkaListener(topics = "payment-request")
     @Transactional
+    @LogExecutionTime
     public void handleOrderCreated(PaymentRequestEvent event) {
         log.info("Оплата по заказу: {}", event.orderId());
 

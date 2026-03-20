@@ -5,7 +5,8 @@ public enum OrderStatus {
     PAYMENT_PROCESSING("Обработка платежа"),
     INVENTORY_RESERVED("Зарезервировано"),
     COMPLETED("Завершен"),
-    CANCELLED("Удалён");
+    CANCELLED("Удалён"),
+    ERROR_OUT_OF_STOCKS("Нет на складе");
 
     private final String description;
 

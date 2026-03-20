@@ -1,9 +1,11 @@
 package com.oz.order.service;
 
+import com.oz.common.chain.OrderValidator;
+import com.oz.common.patterns.requestScope.UserContext;
+import com.oz.order.decorator.OrderProcessor;
 import com.oz.order.dto.Order;
 import com.oz.common.dto.OrderCreatedEvent;
-import com.oz.order.dto.OrderRequest;
-import com.oz.order.enums.OrderStatus;
+import com.oz.common.dto.OrderRequest;
 import com.oz.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -21,15 +24,15 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final OrderProcessor orderProcessor;
+    private final List<OrderValidator> validators;
+    //private final UserContext userContext;
+    // Можно реализовать через прокидывание контекста с данными изи JWT и использовать Например userContext.getUserId()
 
     @Transactional
     public Order createOrder(String userId, OrderRequest request) {
-        // 1. Создаем заказ в статусе PENDING
-        Order order=createOrderFromRequest(userId ,request);
-
-        Order savedOrder = orderRepository.save(order);
-        log.info("Order created with ID: {}", savedOrder.getId());
-
+        validators.forEach(validators-> validators.validate(userId,request));
+        Order savedOrder = orderProcessor.process(userId,request);
         // 2. Отправляем событие для начала саги
         eventPublisher.publishEvent(new OrderCreatedEvent(
                 savedOrder.getId(),
@@ -42,15 +45,7 @@ public class OrderService {
         return savedOrder;
     }
 
-    private Order createOrderFromRequest(String userId, OrderRequest request){
-        Order order = new Order();
-        order.setUserId(userId);
-        order.setProductId(request.productId());
-        order.setQuantity(request.quantity());
-        order.setTotalPrice(request.price());
-        order.setStatus(OrderStatus.PENDING);
-        return order;
-    }
+
 
     public Order findById(UUID uuid) {
         return orderRepository.findByIdWithStatusCompleted(uuid)

@@ -18,6 +18,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     @Modifying
     @Query("delete from Order o WHERE o.id = :id")
     void deleteOrderById(@Param("id") UUID id);
+
     @Query("select o FROM Order o where o.id = :uuid AND o.status = com.oz.order.enums.OrderStatus.COMPLETED")
     Optional<Order> findByIdWithStatusCompleted(@Param("uuid") UUID uuid);
 }

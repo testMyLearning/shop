@@ -1,7 +1,7 @@
 package com.oz.order.controller;
 
 import com.oz.order.dto.Order;
-import com.oz.order.dto.OrderRequest;
+import com.oz.common.dto.OrderRequest;
 import com.oz.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +27,7 @@ public class OrderController {
             @AuthenticationPrincipal Jwt jwt) {
 
         String userId = jwt.getSubject();
+
         Order order = orderService.createOrder(userId, request);
         return ResponseEntity.ok(order);
     }

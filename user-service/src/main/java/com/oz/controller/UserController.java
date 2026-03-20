@@ -1,7 +1,7 @@
 package com.oz.controller;
 
 import com.oz.dto.RegisterRequest;
-import com.oz.dto.UserProfileDto;
+import com.oz.common.dto.UserProfileDto;
 import com.oz.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,4 +35,6 @@ public class UserController {
     public ResponseEntity<?> health() {
         return ResponseEntity.ok(Map.of("status", "UP", "service", "user-service"));
     }
+
+
 }

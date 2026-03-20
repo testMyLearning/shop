@@ -37,7 +37,7 @@ public class InventoryOrderResponseListener {
     }
     @KafkaListener(topics = "inventory-failed")
     public void handleInventoryFailed(InventoryFailedEvent event) {
-        orderOperationService.cancelOrder(event.id(),"Отменен по причине: "+event.cause());
+        orderOperationService.cancelOrder(event.id(),"OUT_OF_STOCK");
 
     }
     @KafkaListener(topics = "payment-success")

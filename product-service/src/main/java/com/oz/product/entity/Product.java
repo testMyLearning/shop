@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "typeOfThing")
 @Entity
 @Table(name = "products", indexes = {
         @Index(name = "idx_products_name", columnList = "name"),
@@ -21,6 +23,7 @@ public class Product extends com.oz.common.entity.Product {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @Enumerated(value= EnumType.STRING)
+    @Column(name = "typeOfThing", insertable = false, updatable = false)
     private TypeOfThing typeOfThing;
 
     public Product(String name,

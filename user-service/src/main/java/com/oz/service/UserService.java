@@ -2,7 +2,7 @@
 package com.oz.service;
 
 import com.oz.dto.RegisterRequest;
-import com.oz.dto.UserProfileDto;
+import com.oz.common.dto.UserProfileDto;
 import com.oz.entity.UserProfile;
 import com.oz.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -92,5 +92,10 @@ public class UserService {
         dto.setAddress(profile.getAddress());
         dto.setCreatedAt(profile.getCreatedAt());
         return dto;
+    }
+
+    public UserProfileDto getUser(Long userId) {
+        UserProfile profile = userProfileRepository.findById(userId).orElseThrow();
+        return this.mapToDto(profile);
     }
 }
