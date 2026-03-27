@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: liquibase/24-03-2026-add-column-updateAt-Product-class.yml
+  - include:
+      file: liquibase/24-03-2025-change-column-color-type-string.yml

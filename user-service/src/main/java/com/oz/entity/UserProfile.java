@@ -14,6 +14,7 @@ public class UserProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
     @Column(name = "keycloak_id", nullable = false, unique = true)

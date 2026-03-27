@@ -8,6 +8,7 @@ spring:
     import:
       - optional:file:common-yml/application-keycloak.yml
       - optional:file:common-yml/application-postgres.yml
+      - optional:file:common-yml/application-logging.yml
 logging:
   level:
     com.oz.user: DEBUG

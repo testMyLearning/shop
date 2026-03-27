@@ -1,8 +1,7 @@
 package com.oz.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oz.config.KeycloakConfig;
+
+import com.oz.common.exception.CustomException;
 import com.oz.dto.RegisterRequest;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
@@ -12,16 +11,12 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
+
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 @Service
 @Slf4j
@@ -76,12 +71,12 @@ public class KeycloakAdminService {
             } else {
                 String error = response.readEntity(String.class);
                 log.error("Failed to create user in Keycloak: {}", error);
-                throw new RuntimeException("Keycloak creation failed: " + response.getStatusInfo());
+                throw new CustomException("Keycloak creation failed: " + response.getStatusInfo());
             }
 
         } catch (Exception e) {
             log.error("Exception during Keycloak user creation", e);
-            throw new RuntimeException("Failed to create user in Keycloak", e);
+            throw new CustomException("Failed to create user in Keycloak", e);
         }
     }
 
@@ -107,7 +102,7 @@ public class KeycloakAdminService {
 
         } catch (Exception e) {
             log.error("Failed to assign role {} to user {}", roleName, userId, e);
-            throw new RuntimeException("Failed to assign role", e);
+            throw new CustomException("Failed to assign role", e);
         }
     }
 

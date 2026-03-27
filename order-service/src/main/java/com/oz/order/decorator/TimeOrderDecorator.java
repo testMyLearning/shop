@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-@Primary
 public class TimeOrderDecorator implements OrderProcessor
 {
     @Qualifier("loggingOrderDecorator")

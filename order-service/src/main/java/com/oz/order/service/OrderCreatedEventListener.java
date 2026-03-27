@@ -4,6 +4,7 @@ import com.oz.common.dto.OrderCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -15,10 +16,10 @@ public class OrderCreatedEventListener {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final OrderOperationService orderService;
-
+@Async("customExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleOrderCreated(OrderCreatedEvent event) {
-        log.info("Transaction committed. Sending event to Kafka for order: {}", event.orderId());
+        log.info("Транзакция завершена для события: {}", event.orderId());
 
         // Теперь отправка безопасна: данные точно есть в БД
         kafkaTemplate.send("order-created",event.orderId().toString(), event)

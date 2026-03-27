@@ -15,7 +15,7 @@ public class GatewaySecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)  // отключаем CSRF
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/auth/**").permitAll()  // разрешаем логин
+                        .pathMatchers("/auth/**","/api/users/register","/api/users/register/**").permitAll()  // разрешаем логин
                         .anyExchange().permitAll()  // пока все разрешено для теста
                 )
                 .build();

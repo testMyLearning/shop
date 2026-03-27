@@ -1,6 +1,7 @@
 package com.oz.product.controller;
 
 import com.oz.common.dto.PageResponse;
+import com.oz.product.collections.CollectionStressTestService;
 import com.oz.product.dto.ProductDto;
 import com.oz.product.dto.UpdateProductDto;
 import com.oz.product.enums.SortField;
@@ -15,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 
 @RestController
@@ -24,17 +26,19 @@ import java.util.UUID;
 public class ProductController {
 
     private final ProductService productService;
+    private final CollectionStressTestService collectionStressTestService;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('seller', 'buyer')")
-    public ResponseEntity<?> getAllProducts(
+    public CompletableFuture<ResponseEntity<PageResponse<ProductDto>>> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "price") SortField[] sortField,
             @RequestParam(defaultValue = "asc") SortField.Direction direction
     ) {
-        PageResponse<ProductDto> result = productService.getAllProducts(page, size, sortField, direction);
-        return ResponseEntity.ok(result);
+        return productService.getAllProducts(page,size,sortField,direction)
+                .thenApply(ResponseEntity::ok)
+                .exceptionally(e-> ResponseEntity.status(500).build());
     }
 
     @PostMapping
@@ -59,6 +63,11 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/test")
+    public ResponseEntity<?> startTestCollection(){
+        collectionStressTestService.runStressTest();
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
 
 }

@@ -26,9 +26,9 @@ public class OrderController {
             @Valid @RequestBody OrderRequest request,
             @AuthenticationPrincipal Jwt jwt) {
 
-        String userId = jwt.getSubject();
+        String keycloakId = jwt.getSubject();
 
-        Order order = orderService.createOrder(userId, request);
+        Order order = orderService.createOrder(keycloakId, request);
         return ResponseEntity.ok(order);
     }
 

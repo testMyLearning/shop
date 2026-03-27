@@ -5,15 +5,27 @@ server:
 spring:
   application:
     name: api-gateway
+  config:
+    import:
+      - optional:file:common-yml/application-logging.yml
   cloud:
     gateway:
       routes:
-        - id: user-service
+        # 1. Публичный маршрут для регистрации (БЕЗ TokenRelay)
+        - id: user-registration
           uri: http://user-service:8081
           predicates:
-            - Path=/api/users/**,/auth/**
+            - Path=/api/users/register, /auth/**
+          # Здесь НЕ пишем TokenRelay
+
+        # 2. Защищенный маршрут для профиля и прочего (С TokenRelay)
+        - id: user-service-protected
+          uri: http://user-service:8081
+          predicates:
+            - Path=/api/users/**
           filters:
             - TokenRelay=
+
         - id: order-service
           uri: http://order-service:8085
           predicates:
@@ -21,11 +33,12 @@ spring:
           filters:
             - TokenRelay=
 
-logging:
-  level:
-    com.oz.gateway: DEBUG
-    org.springframework.cloud.gateway: INFO
-    org.springframework.security: INFO
+        - id: product-service
+          uri: http://product-service:8084
+          predicates:
+           - Path=/api/products/**
+
+
 
 # Actuator endpoints для мониторинга
 management:

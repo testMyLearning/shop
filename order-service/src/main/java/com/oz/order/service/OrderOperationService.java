@@ -1,11 +1,10 @@
 package com.oz.order.service;
 
 import com.oz.common.dto.InventoryFailedEvent;
-import com.oz.common.patterns.strategy.CancellationStrategy;
+import com.oz.order.strategy.CancelledStrategy;
 import com.oz.order.dto.Order;
 import com.oz.order.enums.OrderStatus;
 import com.oz.order.repository.OrderRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,19 +19,19 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OrderOperationService {
     private final OrderRepository orderRepository;
-    private final Map<String,CancellationStrategy> strategiesMap;
+    private final Map<String, CancelledStrategy> strategiesMap;
 
-    public OrderOperationService(OrderRepository orderRepository, List<CancellationStrategy> strategies) {
+    public OrderOperationService(OrderRepository orderRepository, List<CancelledStrategy> strategies) {
         this.orderRepository = orderRepository;
         // Группируем стратегии по их внутреннему коду ошибки
         this.strategiesMap = strategies.stream()
-                .collect(Collectors.toMap(CancellationStrategy::getStockErrorCode, s -> s));
+                .collect(Collectors.toMap(CancelledStrategy::getStockErrorCode, s -> s));
     }
     @Transactional(propagation = Propagation.REQUIRES_NEW) // Важно: новая транзакция!
     public void cancelOrder(UUID orderId, String reason) {
 
         Order order = orderRepository.findById(orderId).orElseThrow();
-        CancellationStrategy strategy = strategiesMap.get(reason);
+        CancelledStrategy strategy = strategiesMap.get(reason);
         if (strategy != null) {
             strategy.handle(new InventoryFailedEvent(
                     orderId,
@@ -40,6 +39,8 @@ public class OrderOperationService {
                     order.getQuantity(),
                     reason
             ));
+            //TODO должна быть логика измненеия статуса заказа или отправки сообщения в очередб
+            log.info( "Отмена заказа {}. Статус изменён на {}",orderId,strategy.getStockErrorCode());
         } else {
             orderRepository.deleteOrderById(orderId);
             log.warn("Заказ {} отменен. Причина: {}", orderId, reason);

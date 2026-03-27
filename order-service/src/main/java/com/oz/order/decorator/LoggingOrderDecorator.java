@@ -16,9 +16,9 @@ public class LoggingOrderDecorator implements OrderProcessor{
     }
 
     @Override
-    public Order process(String userId, OrderRequest request) {
-log.info("Начало создания заказа");
-Order order = delegate.process(userId,request);
+    public Order process(String keycloakId, OrderRequest request) {
+log.info("Начало создания заказа для пользователя {}",keycloakId);
+Order order = delegate.process(keycloakId,request);
 log.info("Заказ создан");
 return order;
     }

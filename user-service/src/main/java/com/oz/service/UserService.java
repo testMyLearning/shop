@@ -1,6 +1,7 @@
 
 package com.oz.service;
 
+import com.oz.common.exception.CustomException;
 import com.oz.dto.RegisterRequest;
 import com.oz.common.dto.UserProfileDto;
 import com.oz.entity.UserProfile;
@@ -22,7 +23,7 @@ public class UserService {
     public UserProfileDto registerUser(RegisterRequest request) {
         // 1. Проверяем, нет ли уже такого email в нашей БД
         if (userProfileRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("User with this email already exists in our database");
+            throw new CustomException("User with this email already exists in our database");
         }
 
         // 2. Проверяем, нет ли уже такого email в Keycloak
@@ -30,7 +31,7 @@ public class UserService {
         if (existingUserId != null) {
             log.warn("User with email {} already exists in Keycloak with ID: {}",
                     request.getEmail(), existingUserId);
-            throw new RuntimeException("User with this email already exists in authentication system");
+            throw new CustomException("User with this email already exists in authentication system");
         }
 
         // 3. Создаем пользователя в Keycloak (admin token получается автоматически внутри библиотеки!)
@@ -40,7 +41,7 @@ public class UserService {
             log.info("User created in Keycloak with ID: {}", keycloakId);
         } catch (Exception e) {
             log.error("Failed to create user in Keycloak", e);
-            throw new RuntimeException("Registration failed: unable to create user in authentication system", e);
+            throw new CustomException("Registration failed: unable to create user in authentication system", e);
         }
 
         // 4. Назначаем роль buyer (исправлено - убрали adminToken)
@@ -72,13 +73,13 @@ public class UserService {
 
     public UserProfileDto getUserByKeycloakId(String keycloakId) {
         UserProfile profile = userProfileRepository.findByKeycloakId(keycloakId)
-                .orElseThrow(() -> new RuntimeException("User not found with Keycloak ID: " + keycloakId));
+                .orElseThrow(() -> new CustomException("User not found with Keycloak ID: " + keycloakId));
         return mapToDto(profile);
     }
 
     public UserProfileDto getUserByEmail(String email) {
         UserProfile profile = userProfileRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+                .orElseThrow(() -> new CustomException("User not found with email: " + email));
         return mapToDto(profile);
     }
 

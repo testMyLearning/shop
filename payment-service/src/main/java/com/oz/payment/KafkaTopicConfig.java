@@ -12,7 +12,7 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic paymentSuccessTopic() {
         return TopicBuilder.name("payment-success")
-                .partitions(10)
+                .partitions(3)
                 .replicas(1)
                 .build();
     }

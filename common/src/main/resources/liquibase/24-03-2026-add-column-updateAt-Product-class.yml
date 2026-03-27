@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 24-03-2026-add-column-updatedAt
+      author: "Vladimir Radionov"
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            columnExists:
+              tableName: products
+              columnName: updated_at
+      changes:
+        - addColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: true

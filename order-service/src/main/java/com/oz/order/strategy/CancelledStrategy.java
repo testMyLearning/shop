@@ -1,10 +1,11 @@
-package com.oz.common.patterns.strategy;
+package com.oz.order.strategy;
 
 import com.oz.common.dto.InventoryFailedEvent;
 
-public interface CancellationStrategy {
+public interface CancelledStrategy {
 
     void handle(InventoryFailedEvent event);
+
 
     String getStockErrorCode();
 }

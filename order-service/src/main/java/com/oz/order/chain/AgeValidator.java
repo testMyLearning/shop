@@ -3,6 +3,7 @@ package com.oz.order.chain;
 import com.oz.common.chain.OrderValidator;
 import com.oz.common.dto.OrderRequest;
 import com.oz.common.dto.UserProfileDto;
+import com.oz.common.exception.CustomException;
 import com.oz.order.feign.UserServiceClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class AgeValidator implements OrderValidator {
         // 2. Бизнес-логика: проверяем возраст
         if (Math.random()*100 < 18) {
             log.warn("Пользователь {} слишком молод для совершения покупок", userId);
-            throw new RuntimeException("Для оформления заказа вам должно быть 18 лет");
+            throw new CustomException("Для оформления заказа вам должно быть 18 лет");
         }
 
         log.info("Проверка возраста пройдена успешно");

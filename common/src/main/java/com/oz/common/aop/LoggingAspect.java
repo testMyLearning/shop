@@ -10,10 +10,14 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class LoggingAspect {
+    public LoggingAspect() {
+        log.info("🎯 Аспект логирования времени загружен!");
+    }
 
     // Pointcut: применяем ко всем методам, помеченным @LogExecutionTime
-    @Around("@annotation(com.oz.common.config.LogExecutionTime)")
+    @Around("@annotation(com.oz.common.aop.LogExecutionTime)")
     public Object logTime(ProceedingJoinPoint joinPoint) throws Throwable {
+
         long start = System.currentTimeMillis();
 
         try {

@@ -1,5 +1,6 @@
 package com.oz.product.repository;
 
+import com.oz.common.enums.Color;
 import com.oz.product.entity.Product;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.*;
@@ -7,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 @Repository
@@ -25,4 +27,10 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
     @Modifying
     @Query("UPDATE Product p SET p.count = p.count + :qty WHERE p.id = :id")
     void incrementStock(@Param("id") UUID productId, @Param("qty") Integer qty);
+
+    List<Product> findAllByColor(Color color);
+
+    List<Product> findTop10ByOrderByPriceDesc();
+
+    List<Product> findAll();
 }

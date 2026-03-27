@@ -5,7 +5,7 @@ import com.oz.common.aop.LogExecutionTime;
 import com.oz.common.dto.PaymentFailed;
 import com.oz.common.dto.PaymentRequestEvent;
 
-import com.oz.payment.Payment;
+
 import com.oz.payment.adapter.BankProcessor;
 import com.oz.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.stream.Stream;
+
 
 @Service
 @Slf4j
@@ -53,20 +53,20 @@ public class PaymentService {
             log.error("ошибка в обработке платежа по причине : {}", e.getMessage());
         }
     }
-    @Transactional(readOnly = true) // Важно! Сессия должна быть открыта
-    public void processHugeAmountOfData() {
-        try (Stream<Payment> paymentStream = repository.streamAllPayments()) {
-            // Здесь Java использует Итератор "под капотом"
-            paymentStream.forEach(payment -> {
-                // Обрабатываем по одному, не загружая 1 000 000 записей в RAM
-//                Если внутри filter или map тебе нужно вызвать:
-//                Внешний микросервис по API.
-//                Сложную библиотеку (например, расчет траектории, криптографию или PDF-генератор).
-//                Метод, который есть только в Java-коде твоего проекта.
-//                Пример: filter(payment -> internalRiskService.isFraud(payment)) — база данных не знает о твоем InternalRiskService.
-                log.info("Processing payment: {}", payment.getId());
-            });
-        }
-    }
+//    @Transactional(readOnly = true) // Важно! Сессия должна быть открыта
+//    public void processHugeAmountOfData() {
+//        try (Stream<Payment> paymentStream = repository.streamAllPayments()) {
+//            // Здесь Java использует Итератор "под капотом"
+//            paymentStream.forEach(payment -> {
+//                // Обрабатываем по одному, не загружая 1 000 000 записей в RAM
+////                Если внутри filter или map тебе нужно вызвать:
+////                Внешний микросервис по API.
+////                Сложную библиотеку (например, расчет траектории, криптографию или PDF-генератор).
+////                Метод, который есть только в Java-коде твоего проекта.
+////                Пример: filter(payment -> internalRiskService.isFraud(payment)) — база данных не знает о твоем InternalRiskService.
+//                log.info("Processing payment: {}", payment.getId());
+//            });
+//        }
+//    }
 
 }

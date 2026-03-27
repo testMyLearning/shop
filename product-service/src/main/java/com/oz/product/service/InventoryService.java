@@ -24,7 +24,7 @@ public class InventoryService {
     @KafkaListener(topics = "order-created")
     @Transactional
     public void handlePaymentProcessed(OrderCreatedEvent event) {
-        log.info("Reserving inventory for order: {}", event.orderId());
+        log.info("Резервируем товары по заявке: {}", event.orderId());
 
         int updatedCount = productRepository.decrementStock(event.productId(),event.quantity());
         if(updatedCount > 0){
@@ -37,7 +37,7 @@ public class InventoryService {
                     , "Нет нужного количества товара"));
         }
     };
-    @KafkaListener(topics = "payment-failed", groupId = "inventory-group")
+    @KafkaListener(topics = "payment-failed")
     @Transactional
     public void handlePaymentFailed(PaymentFailedEvent event) {
         log.warn("Оплата заказа {} не удалась. Начинаем возврат товара на склад.", event.orderId());

@@ -10,4 +10,5 @@ spring:
       - optional:file:common-yml/application-keycloak.yml
       - optional:file:common-yml/application-postgres.yml
       - optional:file:common-yml/application-kafka.yml
+      - optional:file:common-yml/application-logging.yml
 

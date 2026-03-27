@@ -1,6 +1,8 @@
 package com.oz.product.service;
 
 import com.oz.common.dto.PageResponse;
+import com.oz.common.exception.CustomException;
+import com.oz.common.executors.CustomThreadPoolExecutor;
 import com.oz.product.dto.ProductDto;
 import com.oz.product.dto.UpdateProductDto;
 import com.oz.product.entity.Product;
@@ -19,11 +21,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -36,30 +40,36 @@ public class ProductService {
     private final ProductFactory productFactory;
     private final PrototypeProductReportGenerator generator;
     private final ObjectProvider<PrototypeProductReportGenerator> reportGeneratorObjectProvider;
+    private final CustomThreadPoolExecutor executor;
+    private final TransactionTemplate transactionTemplate;
 
 
-    @Transactional(readOnly = true)
-    public PageResponse<ProductDto> getAllProducts(int page,
+
+    public CompletableFuture<PageResponse<ProductDto>> getAllProducts(int page,
                                                    int size,
                                                    SortField[] sortField,
                                                    SortField.Direction direction) {
-        PageResponse<ProductDto> checkCache = checkFromCache(page,size,sortField ,direction);
-        if(checkCache!=null){
-            return checkCache;
+        return CompletableFuture.supplyAsync(()-> checkFromCache(page,size,sortField ,direction),executor.customExecutor())
+                .thenCompose(cached->{
+                    if(cached !=null){
+            return CompletableFuture.completedFuture(cached);
         }
-
-    Sort sort = this.sortingBy(sortField,direction);
+                    return CompletableFuture.supplyAsync(()->
+transactionTemplate.execute(status->{
+    Sort sort = sortingBy(sortField,direction);
     Pageable pageable = PageRequest.of(page,size,sort);
-    Page<Product> resultPage = productRepository.findAll(pageable);
-    PageResponse<ProductDto> response = convert(resultPage);
-        CompletableFuture.runAsync(() -> {
+    return convert(productRepository.findAll(pageable));
+    }),executor.customExecutor()).thenApply(response-> {
             redisTemplate.opsForValue().set(this.saveCachedKey(page, size, sortField, direction),
                     response,
                     10, TimeUnit.SECONDS);
-        });
-    return response;
+                        return response;
+            });
 
+
+    });
     }
+
     private String saveCachedKey(int page,
                                  int size,
                                  SortField[] sortField,
@@ -100,8 +110,8 @@ public class ProductService {
     public void createProduct(@Valid ProductDto productDto) {
         TypeOfThing typeOfThing = TypeOfThing.fromName(productDto.typeOfThing());
         Product createProduct = productFactory.createProductWithType(typeOfThing);
-        Product entity = productMapper.toEntity(productDto);
-        productRepository.save(entity);
+        productMapper.createNewProductFromDTO(productDto,createProduct);
+        productRepository.save(createProduct);
         clearRedis();
     }
     @Transactional
@@ -113,7 +123,7 @@ public class ProductService {
     @Transactional
     public void updateProducts(@Valid UpdateProductDto productDto, UUID id) {
         Product findProduct = productRepository.findByIdWithLock(id)
-                .orElseThrow(()-> new RuntimeException("Не найден продукт"));
+                .orElseThrow(()-> new CustomException("Не найден продукт"));
         productMapper.updateProductFromDTO(productDto,findProduct);
         clearRedis();
     }
