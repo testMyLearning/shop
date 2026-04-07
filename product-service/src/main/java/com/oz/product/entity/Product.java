@@ -3,8 +3,7 @@ package com.oz.product.entity;
 import com.oz.common.enums.Color;
 import com.oz.product.enums.TypeOfThing;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.envers.Audited;
 
 
 import java.math.BigDecimal;
@@ -14,14 +13,13 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "typeOfThing")
 @Entity
-@Cacheable // Включаем кэш для этой сущности
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "products", indexes = {
         @Index(name = "idx_products_name", columnList = "name"),
         @Index(name = "idx_products_price", columnList = "price"),
         @Index(name = "idx_products_color", columnList = "color"),
         @Index(name = "idx_products_typeOfThing", columnList = "typeOfThing")
 })
+@Audited
 public class Product extends com.oz.common.entity.Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

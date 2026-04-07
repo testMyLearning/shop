@@ -1,0 +1,70 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20231027-1-create-cats-and-vax
+      author: vladimir_radionov
+      changes:
+        # 1. Последовательность для Котов
+        - createSequence:
+            sequenceName: cats_seq
+            startValue: 1
+            incrementBy: 50
+
+        # 2. Таблица Котов
+        - createTable:
+            tableName: cats
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: age
+                  type: INT
+              - column:
+                  name: breed
+                  type: VARCHAR(50)
+
+        # 3. Последовательность для Прививок
+        - createSequence:
+            sequenceName: vaccinations_seq
+            startValue: 1
+            incrementBy: 50
+
+        # 4. Таблица Прививок
+        - createTable:
+            tableName: vaccinations
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: vaccine_name
+                  type: VARCHAR(255)
+              - column:
+                  name: dose_number
+                  type: INT
+              - column:
+                  name: date_of_vax
+                  type: DATE
+              - column:
+                  name: cat_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+        # 5. Внешний ключ (связываем прививки с котами)
+        - addForeignKeyConstraint:
+            baseTableName: vaccinations
+            baseColumnNames: cat_id
+            constraintName: fk_vax_cat
+            referencedTableName: cats
+            referencedColumnNames: id
+            onDelete: CASCADE

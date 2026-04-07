@@ -37,6 +37,7 @@ public class OrderController {
     Order order = orderService.findById(uuid);
     return ResponseEntity.ok(order);
     }
+
 //
 //    @GetMapping("/{id}")
 //    @PreAuthorize("hasAnyRole('buyer', 'seller', 'admin')")

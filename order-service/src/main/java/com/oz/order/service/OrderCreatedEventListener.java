@@ -16,12 +16,11 @@ public class OrderCreatedEventListener {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final OrderOperationService orderService;
-@Async("customExecutor")
+
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleOrderCreated(OrderCreatedEvent event) {
         log.info("Транзакция завершена для события: {}", event.orderId());
 
-        // Теперь отправка безопасна: данные точно есть в БД
         kafkaTemplate.send("order-created",event.orderId().toString(), event)
                 .whenComplete((result, ex) -> {
                     if (ex == null) {
@@ -29,7 +28,6 @@ public class OrderCreatedEventListener {
                                 result.getRecordMetadata().topic(),
                                 result.getRecordMetadata().partition(),
                                 result.getRecordMetadata().offset());
-                        // Здесь можно реализовать логику досылки или отмены заказа
                     } else {
                         log.error("Failed to send Kafka message for order {}", event.orderId(), ex);
                         orderService.cancelOrder(event.orderId(),"OUT_OF_STOCK");

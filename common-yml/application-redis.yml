@@ -9,8 +9,7 @@ spring:
           max-active: 20
           max-idle: 10
           min-idle: 5
-
   cache:
     type: redis
     redis:
-      time-to-live: 10000
+      time-to-live: 10000s

@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: 07-04-2026-add-table-for-audited-products
+      author: "Vladimir Radionov"
+      validCheckSum: "9:56a06a5363ac9a6b91ada87d31e726ad"
+      changes:
+        - createTable:
+            tableName: revinfo
+            columns:
+              - column:
+                  name: rev
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: revtstmp
+                  type: bigint
+
+
+        - createTable:
+            tableName: products_aud
+            columns:
+              - column: { name: id, type: UUID }
+              - column: { name: rev, type: int }
+              - column: { name: revtype, type: tinyint } # 0-ADD, 1-MOD, 2-DEL
+              - column: { name: name, type: varchar(255) }
+              - column: { name: price, type: decimal }
+              - column: { name: color, type: varchar(255) }
+              - column: { name: type_of_thing, type: varchar(255) }
+              - column: { name: count, type: bigInt}
+              - column: { name: updated_at, type: timestamp}
+            constraints:
+              primaryKey: true
+              primaryKeyName: pk_products_aud
+              columns: id, rev # Составной ключ

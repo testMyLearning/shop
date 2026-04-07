@@ -3,3 +3,15 @@ databaseChangeLog:
       file: liquibase/24-03-2026-add-column-updateAt-Product-class.yml
   - include:
       file: liquibase/24-03-2025-change-column-color-type-string.yml
+  - include:
+      file: liquibase/27-03-2025-add-table-cats-and-vaccinations.yml
+  - include:
+      file: liquibase/07-04-2026-add-column-version-to-orders.yml
+  - include:
+      file: liquibase/07-04-2026-add-table-for-audited-products.yml
+  - include:
+      file: liquibase/07-04-2026-add-column-for-revinfo-userid.yml
+  - include:
+      file: liquibase/07-04-2026-add-column-for-revinfo-date-of-entry.yml
+  - include:
+      file: liquibase/07-04-2026-add-sequences.yml

@@ -1,32 +1,33 @@
 package com.oz.common.entity;
 
 import com.oz.common.enums.Color;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.MappedSuperclass;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SourceType;
-import org.hibernate.annotations.UpdateTimestamp;
+import jakarta.persistence.*;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class Product {
     protected String name;
     protected Long count;
     protected BigDecimal price;
     @Column(name = "date_of_entry", updatable = false)
-    @CreationTimestamp
+    @CreatedDate
     protected LocalDate dateOfEntry;
     @Enumerated(EnumType.STRING)
     protected Color color;
 
 
 
-    @UpdateTimestamp
+    @LastModifiedDate
     protected LocalDateTime updatedAt;
 
     protected Product(){}

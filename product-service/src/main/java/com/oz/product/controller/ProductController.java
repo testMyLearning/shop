@@ -1,11 +1,11 @@
 package com.oz.product.controller;
 
 import com.oz.common.dto.PageResponse;
-import com.oz.product.collections.CollectionStressTestService;
 import com.oz.product.dto.ProductDto;
 import com.oz.product.dto.UpdateProductDto;
 import com.oz.product.enums.SortField;
 import com.oz.product.service.ProductService;
+import com.oz.product.service.ProductServiceOperation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 
 @RestController
@@ -26,25 +25,25 @@ import java.util.concurrent.CompletableFuture;
 public class ProductController {
 
     private final ProductService productService;
-    private final CollectionStressTestService collectionStressTestService;
+    private final ProductServiceOperation productServiceOperation;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('seller', 'buyer')")
-    public CompletableFuture<ResponseEntity<PageResponse<ProductDto>>> getAllProducts(
+    public ResponseEntity<PageResponse<ProductDto>> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "price") SortField[] sortField,
             @RequestParam(defaultValue = "asc") SortField.Direction direction
     ) {
-        return productService.getAllProducts(page,size,sortField,direction)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(e-> ResponseEntity.status(500).build());
+        PageResponse<ProductDto> response = productService.getAllProducts(page,size,sortField,direction);
+
+        return ResponseEntity.ok(response);
+
     }
 
     @PostMapping
     @PreAuthorize("hasRole('seller')")
     public ResponseEntity<?> createProduct(@Valid @RequestBody ProductDto productDto) {
-        productService.createProduct(productDto);
+        productServiceOperation.createProduct(productDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
 
     }
@@ -52,22 +51,18 @@ public class ProductController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<?> deleteProductById(@PathVariable("id") UUID uuid) {
-        productService.deleteByProductId(uuid);
+        productServiceOperation.deleteByProductId(uuid);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateProduct(@Valid @RequestBody UpdateProductDto productDto,
                                            @PathVariable UUID id) {
-        productService.updateProducts(productDto, id);
+        productServiceOperation.updateProducts(productDto, id);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<?> startTestCollection(){
-        collectionStressTestService.runStressTest();
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
+
 
 
 }

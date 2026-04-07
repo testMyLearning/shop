@@ -35,6 +35,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://database_all:5555/postgres_db
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_MAIN_LAZY_INITIALIZATION=true
     networks:
       - net
 
@@ -49,6 +50,7 @@ services:
     environment: # Теперь отступ правильный (2 пробела от края сервиса)
       - SPRING_DATASOURCE_URL=jdbc:postgresql://database_all:5555/postgres_db
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_MAIN_LAZY_INITIALIZATION=true
     networks:
       - net
 
@@ -62,6 +64,8 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://database_all:5555/postgres_db
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_MAIN_LAZY_INITIALIZATION=true
     networks:
       - net
+
 

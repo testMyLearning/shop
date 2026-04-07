@@ -16,6 +16,10 @@ spring:
           uri: http://user-service:8081
           predicates:
             - Path=/api/users/register, /auth/**
+        - id: virtual-test
+          uri: http://virtual-service:8088
+          predicates:
+            - Path=/api/virtual/**
           # Здесь НЕ пишем TokenRelay
 
         # 2. Защищенный маршрут для профиля и прочего (С TokenRelay)

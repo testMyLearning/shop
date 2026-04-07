@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 07-04-2026-create-revinfo-sequence
+      author: "Vladimir Radionov"
+      changes:
+        - createSequence:
+            sequenceName: revinfo_seq
+            startValue: 1
+            incrementBy: 1

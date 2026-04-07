@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 07-04-2026-add-column-for-revinfo-userid
+      author: "Vladimir Radionov"
+      changes:
+        - addColumn:
+            tableName: revinfo
+            columns:
+              - column:
+                  name: user_id
+                  type: varchar(255)

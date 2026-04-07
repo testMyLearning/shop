@@ -21,11 +21,13 @@ public class InventoryOrderResponseListener {
     private final OrderOperationService orderOperationService;
     private final OrderRepository orderRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
+
+
     @KafkaListener(topics = "inventory-reserved")
     public void handleInventoryReserved(InventoryReservedEvent event) {
-        orderOperationService.updateOrderStatus(event.orderId(), OrderStatus.INVENTORY_RESERVED);
         Order order  = orderRepository.findById(event.orderId())
                 .orElseThrow(() -> new CustomException("Заказ не найден в базе!"));
+        orderOperationService.updateOrderStatus(event.orderId(), OrderStatus.INVENTORY_RESERVED);
         PaymentRequestEvent paymentRequest = new PaymentRequestEvent(
                 order.getId(),
                 order.getUserId(),

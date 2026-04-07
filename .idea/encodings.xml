@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/1/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Frontend/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/api-gateway/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/api-gateway/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/common/src/main/java" charset="UTF-8" />
@@ -17,5 +18,6 @@
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/user-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/user-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/virtual-service/src/main/java" charset="UTF-8" />
   </component>
 </project>

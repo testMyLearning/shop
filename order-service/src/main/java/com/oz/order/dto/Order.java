@@ -3,6 +3,9 @@ package com.oz.order.dto;
 import com.oz.order.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -23,18 +26,13 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-
+    @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @PrePersist
-    void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
+    @Version
+    private Long version;
 
-    @PreUpdate
-    void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
 }

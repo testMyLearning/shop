@@ -15,11 +15,11 @@ public class CustomThreadPoolExecutor {
     @Bean(name= "customExecutor")
     public Executor customExecutor(){
         int cores = Runtime.getRuntime().availableProcessors();
-
+        int corePoolSize = cores * 2;
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 executor.setQueueCapacity(500);
-executor.setCorePoolSize(cores*2);
-executor.setMaxPoolSize(20);
+executor.setCorePoolSize(corePoolSize);
+executor.setMaxPoolSize(Math.max(corePoolSize,20));
 executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 executor.setThreadNamePrefix("Custom-");
         executor.setWaitForTasksToCompleteOnShutdown(true); // ждать завершения

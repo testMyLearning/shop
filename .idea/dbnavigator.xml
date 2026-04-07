@@ -17,23 +17,48 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b">
-      <console name="Connection" type="STANDARD" schema="public" session="Main"><![CDATA[ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_status_check CASCADE;]]></console>
+      <console name="Connection" type="STANDARD" schema="public" session="Main"><![CDATA[INSERT INTO vaccinations (id, vaccine_name, dose_number, date_of_vax, cat_id)
+SELECT 
+    nextval('vaccinations_seq'),                -- ваш Generator
+    (ARRAY['Rabies', 'FVRCP', 'FeLV'])[floor(random() * 3 + 1)], -- случайное название
+    (floor(random() * 3 + 1))::int,             -- номер дозы 1, 2 или 3
+    CURRENT_DATE - (random() * 365 * 2)::int,   -- дата в пределах последних 2 лет
+    cat.id                                      -- связка с ID кота
+FROM cats cat
+CROSS JOIN generate_series(1, 3);       
+
+CREATE INDEX idx_cats_age ON cats(age);
+
+select count(*) from cats c join vaccinations v on c."id"=v.cat_id where c.age > 13; 
+
+UPDATE cats SET age = age-1 where age = 14;
+
+
+UPDATE products SET type_of_thing = 'Jacket' WHERE type_of_thing = 'JACKET';]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" object-ref="schemas/public/tables/products" />
+      <object connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" object-ref="schemas/public/tables/products_aud" />
+      <object connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" object-ref="consoles/Connection" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.vaccinations" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.user_profiles" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.orders" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.products_aud" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.cats" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.products" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.payment" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.revinfo" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />
@@ -70,7 +95,7 @@
           <deprecated-pwd value="cG9zdGdyZXM=" />
         </database>
         <properties>
-          <auto-commit value="false" />
+          <auto-commit value="true" />
         </properties>
         <ssh-settings>
           <active value="false" />
@@ -93,7 +118,7 @@
           <session-management value="true" />
           <ddl-file-binding value="true" />
           <database-logging value="true" />
-          <connect-automatically value="true" />
+          <connect-automatically value="false" />
           <restore-workspace value="true" />
           <restore-workspace-deep value="false" />
           <environment-type value="default" />
@@ -458,7 +483,7 @@
     <execution-engine-settings>
       <statement-execution>
         <fetch-block-size value="100" />
-        <execution-timeout value="20" />
+        <execution-timeout value="60" />
         <debug-execution-timeout value="600" />
         <focus-result value="false" />
         <prompt-execution value="false" />

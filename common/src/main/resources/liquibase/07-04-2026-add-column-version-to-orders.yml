@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 07-04-2026-add-column-version-to-orders
+      author: "Vladimir Radionov"
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            columnExists:
+              tableName: orders
+              columnName: version
+      changes:
+        - addColumn:
+            tableName: orders # Проверь имя таблицы!
+            columns:
+              - column:
+                  name: version
+                  type: bigint # Для Java Long лучше использовать bigint
+                  defaultValueNumeric: 0 # Важно для существующих записей
+                  constraints:
+                    nullable: false

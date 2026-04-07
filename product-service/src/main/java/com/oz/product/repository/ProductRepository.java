@@ -28,9 +28,5 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
     @Query("UPDATE Product p SET p.count = p.count + :qty WHERE p.id = :id")
     void incrementStock(@Param("id") UUID productId, @Param("qty") Integer qty);
 
-    List<Product> findAllByColor(Color color);
 
-    List<Product> findTop10ByOrderByPriceDesc();
-
-    List<Product> findAll();
 }
