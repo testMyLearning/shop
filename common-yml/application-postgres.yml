@@ -11,7 +11,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update  # ← это правильно (на уровне jpa.hibernate)
-    show-sql: false
+    show-sql: true
     properties:
       hibernate:
         generate_statistics: true

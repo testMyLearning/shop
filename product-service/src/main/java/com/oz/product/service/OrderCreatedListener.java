@@ -4,22 +4,22 @@ import com.oz.common.dto.InventoryFailedEvent;
 import com.oz.common.dto.InventoryReservedEvent;
 import com.oz.common.dto.OrderCreatedEvent;
 import com.oz.common.dto.PaymentFailedEvent;
-import com.oz.product.entity.Product;
 import com.oz.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Component
 @Slf4j
 @RequiredArgsConstructor
-public class InventoryService {
+public class OrderCreatedListener {
 
     private final ProductRepository productRepository;
     private final ApplicationEventPublisher eventPublisher;
+
 
     @KafkaListener(topics = "order-created")
     @Transactional

@@ -34,7 +34,14 @@ select count(*) from cats c join vaccinations v on c."id"=v.cat_id where c.age >
 UPDATE cats SET age = age-1 where age = 14;
 
 
-UPDATE products SET type_of_thing = 'Jacket' WHERE type_of_thing = 'JACKET';]]></console>
+UPDATE products SET type_of_thing = 'Jacket' WHERE type_of_thing = 'JACKET';
+
+DROP TABLE revinfo CASCADE;
+
+CREATE TABLE revinfo (
+    rev SERIAL PRIMARY KEY,
+    revtstmp BIGINT
+);]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -43,14 +50,13 @@ UPDATE products SET type_of_thing = 'Jacket' WHERE type_of_thing = 'JACKET';]]><
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files>
       <object connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" object-ref="schemas/public/tables/products" />
-      <object connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" object-ref="schemas/public/tables/products_aud" />
-      <object connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" object-ref="consoles/Connection" />
     </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.orders_aud" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.vaccinations" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.user_profiles" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" dataset="public.orders" active-filter-id="EMPTY_FILTER" />

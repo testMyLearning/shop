@@ -4,7 +4,6 @@ import com.oz.common.dto.OrderCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -12,7 +11,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class OrderCreatedEventListener {
+public class OrderCreatedEventSender {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final OrderOperationService orderService;

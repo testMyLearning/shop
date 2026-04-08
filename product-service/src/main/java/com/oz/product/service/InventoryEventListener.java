@@ -18,11 +18,11 @@ public class InventoryEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleSuccess(InventoryReservedEvent event) {
-        kafkaTemplate.send("inventory-reserved",event.orderId().toString(), event);
+        kafkaTemplate.send("inventory-reserved", event.orderId().toString(), event);
         log.info("Sent to inventory-reserved");
     }
 
-     // Если транзакция упала
+    // Если транзакция упала
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT) // Или если мы сами решили отменить
     public void handleFailure(InventoryFailedEvent event) {
         kafkaTemplate.send("inventory-failed", event);

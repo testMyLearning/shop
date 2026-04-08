@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="unknown-service"/>
+    <!-- Подтягиваем стандартные настройки Spring (цвета, уровни) -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <!-- 1. Аппендер для КОНСОЛИ (используем твой паттерн из YAML) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr([%15.15t]){magenta} %clr(%-5p) %clr(%-40.40logger{39}){cyan} %clr(:){faint} %clr([ID:%X{traceId:-no-id}]){yellow} %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 2. Аппендер для LOKI -->
+    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+        <http>
+            <!-- Адрес Loki в Docker-сети или локально -->
+            <url>http://loki:3100/loki/api/v1/push</url>
+        </http>
+        <format>
+            <label>
+                <!-- Лейблы индексируются. По ним мы будем искать в Grafana -->
+                <pattern>app=${appName},host=${HOSTNAME},level=%level</pattern>
+            </label>
+            <message>
+                <!-- Текст лога. Можно отправить тот же паттерн, что в консоли -->
+                <pattern>[%t] %-5p %logger{39} : [ID:%X{traceId:-no-id}] %msg</pattern>
+            </message>
+            <sortByTime>true</sortByTime>
+        </format>
+    </appender>
+
+    <!-- Настройки уровней логирования (можно дублировать из YAML или управлять тут) -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="LOKI" />
+    </root>
+
+    <!-- Твои специфичные настройки уровней -->
+    <logger name="org.hibernate.orm.jdbc.bind" level="INFO" />
+    <logger name="org.hibernate.SQL" level="TRACE" />
+    <logger name="org.hibernate.engine.internal.StatisticalLoggingSessionEventListener" level="INFO" />
+    <logger name="org.apache.kafka" level="WARN" />
+    <logger name="org.springframework.kafka" level="WARN" />
+    <logger name="org.springframework.transaction" level="INFO" />
+    <logger name="com.oz.gateway" level="DEBUG" />
+    <logger name="org.springframework.cloud.gateway" level="INFO" />
+    <logger name="org.springframework.security" level="INFO" />
+    <logger name="org.hibernate.envers" level="DEBUG" />
+    <logger name="org.hibernate.engine.spi" level="DEBUG" />
+</configuration>

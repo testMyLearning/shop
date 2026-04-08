@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
 
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "orders")
 @Data
+@Audited
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Slf4j
@@ -24,6 +25,7 @@ public class InventoryOrderResponseListener {
 
 
     @KafkaListener(topics = "inventory-reserved")
+    @Transactional
     public void handleInventoryReserved(InventoryReservedEvent event) {
         Order order  = orderRepository.findById(event.orderId())
                 .orElseThrow(() -> new CustomException("Заказ не найден в базе!"));
@@ -39,7 +41,9 @@ public class InventoryOrderResponseListener {
 
     }
     @KafkaListener(topics = "inventory-failed")
+    @Transactional
     public void handleInventoryFailed(InventoryFailedEvent event) {
+        log.info("[INVENTORY FAILED] Ошибка при резервировании товара. Закрытие заявки");
         orderOperationService.cancelOrder(event.id(),"OUT_OF_STOCK");
 
     }

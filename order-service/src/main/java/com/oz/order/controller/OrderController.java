@@ -21,7 +21,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    @PreAuthorize("hasRole('buyer')")
+//    @PreAuthorize("hasRole('buyer')")
     public ResponseEntity<Order> createOrder(
             @Valid @RequestBody OrderRequest request,
             @AuthenticationPrincipal Jwt jwt) {

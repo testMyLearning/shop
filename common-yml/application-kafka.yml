@@ -2,6 +2,7 @@ spring:
   kafka:
     bootstrap-servers: kafka:9092
     producer:
+      observation-enabled: true
       batch-size: 16384
       buffer-memory: 33554432
       # Указываем, что ключ — строка, а значение — JSON
@@ -16,6 +17,7 @@ spring:
         linger.ms: 10
 
     consumer:
+      observation-enabled: true
       group-id: ${spring.application.name}-group
       auto-offset-reset: earliest
       # Указываем, как читать JSON обратно в объект
@@ -23,12 +25,8 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         # Доверяем всем твоим пакетам, чтобы разрешить десериализацию
-        spring.json.trusted.packages: "com.oz.*"
-
-
-
-
+        spring.json.trusted.packages: "*"
     listener:
+      observation-enabled: true
       concurrency: 3
-    # Эти настройки должны быть ВНУТРИ секции producer или consumer (в зависимости от версии Spring)
-    # Но обычно их кладут в producer:
+

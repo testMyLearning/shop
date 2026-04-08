@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Slf4j
@@ -14,11 +15,13 @@ import org.springframework.stereotype.Component;
 public class PaymentEventListener {
     private final OrderOperationService orderOperationService;
     @KafkaListener(topics = "payment-success")
+    @Transactional
     public void handlePaymentSuccess(PaymentRequestEvent event){
         orderOperationService.updateOrderStatus(event.orderId(), OrderStatus.COMPLETED);
         log.info("[{}] Заказ оплачен успешно.",event.orderId());
     }
     @KafkaListener(topics = "payment-failed")
+    @Transactional
     public void handlePaymentFailed(PaymentFailedEvent event) {
         log.warn("Оплата не прошла. Отменяем заказ: {}", event.orderId());
         orderOperationService.cancelOrder(event.orderId(), "ERROR_PAYMENT");

@@ -3,8 +3,12 @@ package com.oz.product.repository;
 import com.oz.common.enums.Color;
 import com.oz.product.entity.Product;
 import jakarta.persistence.LockModeType;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

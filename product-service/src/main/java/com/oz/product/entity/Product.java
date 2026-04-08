@@ -1,8 +1,13 @@
 package com.oz.product.entity;
 
+import com.oz.common.entity.AbstractProduct;
 import com.oz.common.enums.Color;
 import com.oz.product.enums.TypeOfThing;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
 
@@ -20,7 +25,11 @@ import java.util.UUID;
         @Index(name = "idx_products_typeOfThing", columnList = "typeOfThing")
 })
 @Audited
-public class Product extends com.oz.common.entity.Product {
+@AuditOverride(forClass = AbstractProduct.class)
+@Getter
+@Setter
+@NoArgsConstructor
+public class Product extends AbstractProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -39,24 +48,6 @@ public class Product extends com.oz.common.entity.Product {
         this.id = id;
         this.typeOfThing = typeOfThing;
     }
-    public Product(){}
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public TypeOfThing getTypeOfThing() {
-        return typeOfThing;
-    }
-
-    public void setTypeOfThing(TypeOfThing typeOfThing) {
-        this.typeOfThing = typeOfThing;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

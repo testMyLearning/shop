@@ -1,16 +1,22 @@
 logging:
   pattern:
-    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr([%15.15t]){magenta} %clr(%-5p) %clr(%-40.40logger{39}){cyan} %clr(:){faint} %clr([ID:%X{requestId}]){yellow} %msg%n"
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr([%15.15t]){magenta} %clr(%-5p) %clr(%-40.40logger{39}){cyan} %clr(:){faint} %clr([ID:%X{traceId:-no-id}]){yellow} %msg%n"
   level:
-    org.hibernate.orm.jdbc.bind: TRACE
-    org.hibernate.SQL: trace
-    org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: INFO
-    org.apache.kafka: WARN
-    org.springframework.kafka: WARN
-    org.springframework.transaction: trace
+    org.hibernate.orm.jdbc.bind: INFO
+    org.hibernate.SQL: info
+    org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
+    org.apache.kafka: info
+    org.springframework.kafka: info
+    org.springframework.transaction: INFO
     com.oz.gateway: DEBUG
     org.springframework.cloud.gateway: INFO
     org.springframework.security: INFO
     org.hibernate.envers: DEBUG
     org.hibernate.engine.spi: DEBUG
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+    propagation:
+      type: b3_multi
 
