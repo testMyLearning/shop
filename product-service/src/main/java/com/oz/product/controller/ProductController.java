@@ -9,15 +9,13 @@ import com.oz.product.enums.SortField;
 import com.oz.product.service.ProductService;
 import com.oz.product.service.ProductServiceOperation;
 import com.oz.product.service.ServiceSpecifications;
+import com.oz.product.service.ServiceTestAddProducts;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.query.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;
-
 
 import java.util.UUID;
 
@@ -31,6 +29,7 @@ public class ProductController {
     private final ProductService productService;
     private final ProductServiceOperation productServiceOperation;
     private final ServiceSpecifications serviceSpecifications;
+    private final ServiceTestAddProducts serviceTestAddProducts;
 
     @GetMapping
     public ResponseEntity<PageResponse<ProductDto>> getAllProducts(
@@ -74,26 +73,31 @@ return ResponseEntity.ok(response);
 
 
     @PostMapping
-    @PreAuthorize("hasRole('seller')")
+//    @PreAuthorize("hasRole('seller')")
     public ResponseEntity<?> createProduct(@Valid @RequestBody ProductDto productDto) {
         productServiceOperation.createProduct(productDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
 
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{productId}")
 //    @PreAuthorize("hasRole('admin')")
     public ResponseEntity<?> deleteProductById(@PathVariable("id") UUID uuid) {
         productServiceOperation.deleteByProductId(uuid);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{productId}")
     public ResponseEntity<?> updateProduct(@Valid @RequestBody UpdateProductDto productDto,
-                                           @PathVariable UUID id) {
-        productServiceOperation.updateProducts(productDto, id);
+                                           @PathVariable UUID productId) {
+        productServiceOperation.updateProducts(productDto, productId);
         return ResponseEntity.ok().build();
     }
+@PostMapping("/start")
+public ResponseEntity<String> startAddProducts(){
+    serviceTestAddProducts.addProduct();
+        return ResponseEntity.accepted().body("Запуск процесса добавления товаров");
+}
 
 
 }

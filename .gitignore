@@ -40,3 +40,5 @@ build/
 .gigaide
 .gitignore
 application-keycloak.yml
+.env
+common-yml/application-keycloak.yml

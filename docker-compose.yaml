@@ -5,7 +5,8 @@ networks:
 
 services:
   kafka:
-    image: apache/kafka:3.7.0
+    image: apache/kafka:${KAFKA_VERSION}
+    profiles: ["infra"]
     container_name: kafka
     environment:
       # Включаем режим KRaft и задаем роли
@@ -25,66 +26,175 @@ services:
       - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
       - KAFKA_MIN_INSYNC_REPLICAS=1
     ports:
-      - "9092:9092"
+      - "${KAFKA_PORT}:9092"
     networks:
       - net
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+
+  kafka-ui:
+    image: ghcr.io/kafbat/kafka-ui:latest
+    profiles: ["infra"]
+    container_name: kafka-ui
+    ports:
+      - "${KAFKA_UI_PORT}:1111"
+    environment:
+      SERVER_PORT: 1111
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092 # 'kafka' — это имя сервиса в compose
+    networks:
+      - net
+    depends_on:
+      - kafka # укажите имя вашего сервиса кафки
+
 
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0
+    image: quay.io/keycloak/keycloak:${KEYCLOAK_VERSION}
+    profiles: ["infra"]
     container_name: keycloak
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_HTTP_PORT: 8082
+      KEYCLOAK_ADMIN: ${KC_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD}
+      KC_HTTP_PORT: ${KC_PORT}
     ports:
-      - "8082:8082"
+      - "${KC_PORT}:${KC_PORT}"
     command: start-dev
     volumes:
       - ./keycloak-data:/opt/keycloak/data
     networks:
       - net
+
   database:
-    image: postgres:15.8
+    image: postgres:${POSTGRES_VERSION}
+    profiles: ["infra"]
     command: postgres -p 5555 -c max_connections=200 -c shared_buffers=256MB
     container_name: database_all
     environment:
-        POSTGRES_DB: postgres_db
-        POSTGRES_USER: postgres        # ← ОБЯЗАТЕЛЬНО!
-        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: ${DB_NAME}
+        POSTGRES_USER: ${DB_USER}
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-        - "5555:5555"
+        - "${DB_PORT}:5555"
     volumes:
         - postgres-data:/var/lib/postgresql/data
     networks:
       - net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME} -p 5555" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
 
   redis:
     image: redis:7-alpine
+    profiles: ["infra"]
     container_name: redis
     ports:
-      - "6380:6379"
+      - "${REDIS_PORT}:6379"
     volumes:
       - ./redis_data:/data
     networks:
       - net
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   loki:
     image: grafana/loki:2.9.1
+    profiles: ["infra"]
     container_name: loki
     ports:
-      - "3100:3100"
+      - "${LOKI_PORT}:3100"
     command: -config.file=/etc/loki/local-config.yaml
     networks:
       - net
 
   grafana:
     image: grafana/grafana:10.2.0
+    profiles: ["infra"]
     container_name: grafana
     ports:
-      - "3000:3000"
+      - "${GRAFANA_PORT}:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin # Пароль при входе
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD} # Пароль при входе
     depends_on:
       - loki
+    networks:
+      - net
+
+  gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    profiles: ["apps"]
+    ports:
+      - "${GATEWAY_PORT}:8080"
+    networks:
+      - net
+
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    profiles: ["apps"]
+    ports:
+      - "${USER_SERVICE_PORT}:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database_all:5555/postgres_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    networks:
+      - net
+
+
+
+
+  product-service:
+    build:
+      context: .
+      dockerfile: product-service/Dockerfile
+    profiles: ["apps"]
+    ports:
+      - "${PRODUCT_SERVICE_PORT}:8084"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database_all:5555/postgres_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    networks:
+      - net
+
+
+
+
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    profiles: ["apps"]
+    ports:
+      - "${ORDER_SERVICE_PORT}:8085"
+    environment: # Теперь отступ правильный (2 пробела от края сервиса)
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database_all:5555/postgres_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    networks:
+      - net
+
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: payment-service/Dockerfile
+    profiles: ["apps"]
+    ports:
+      - "${PAYMENT_SERVICE_PORT}:8086"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database_all:5555/postgres_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     networks:
       - net
 

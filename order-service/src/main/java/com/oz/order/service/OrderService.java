@@ -12,6 +12,7 @@ import com.oz.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,12 +30,11 @@ public class OrderService {
     private final ApplicationEventPublisher eventPublisher;
     private final OrderProcessor orderProcessor;
     private final List<OrderValidator> validators;
-    private final CustomThreadPoolExecutor executor;
     //private final UserContext userContext;
     // Можно реализовать через прокидывание контекста с данными изи JWT и использовать Например userContext.getUserId()
 
     @Transactional
-    public Order createOrder(String keycloakId, OrderRequest request) {
+    public UUID createOrder(String keycloakId, OrderRequest request) {
         validators.forEach(validators -> validators.validate(keycloakId, request));
         Order savedOrder = orderProcessor.process(keycloakId, request);
             // 2. Отправляем событие для начала саги
@@ -45,8 +45,10 @@ public class OrderService {
                     request.quantity(),
                     request.price()
             ));
-            return savedOrder;
+return savedOrder.getId();
     }
+
+
 
 
     public Order findById(UUID uuid) {

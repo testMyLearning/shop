@@ -21,7 +21,7 @@ databaseChangeLog:
         - createTable:
             tableName: products_aud
             columns:
-              - column: { name: id, type: UUID }
+              - column: { name: orderId, type: UUID }
               - column: { name: rev, type: int }
               - column: { name: revtype, type: tinyint } # 0-ADD, 1-MOD, 2-DEL
               - column: { name: name, type: varchar(255) }
@@ -33,4 +33,4 @@ databaseChangeLog:
             constraints:
               primaryKey: true
               primaryKeyName: pk_products_aud
-              columns: id, rev # Составной ключ
+              columns: orderId, rev # Составной ключ

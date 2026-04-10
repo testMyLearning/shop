@@ -2,7 +2,6 @@ spring:
   kafka:
     bootstrap-servers: kafka:9092
     producer:
-      observation-enabled: true
       batch-size: 16384
       buffer-memory: 33554432
       # Указываем, что ключ — строка, а значение — JSON
@@ -17,7 +16,6 @@ spring:
         linger.ms: 10
 
     consumer:
-      observation-enabled: true
       group-id: ${spring.application.name}-group
       auto-offset-reset: earliest
       # Указываем, как читать JSON обратно в объект

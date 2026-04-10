@@ -38,7 +38,7 @@
 
     <!-- Твои специфичные настройки уровней -->
     <logger name="org.hibernate.orm.jdbc.bind" level="INFO" />
-    <logger name="org.hibernate.SQL" level="TRACE" />
+    <logger name="org.hibernate.SQL" level="WARN" />
     <logger name="org.hibernate.engine.internal.StatisticalLoggingSessionEventListener" level="INFO" />
     <logger name="org.apache.kafka" level="WARN" />
     <logger name="org.springframework.kafka" level="WARN" />

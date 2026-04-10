@@ -1,18 +1,12 @@
 package com.oz.product.repository;
 
-import com.oz.common.enums.Color;
 import com.oz.product.entity.Product;
 import jakarta.persistence.LockModeType;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 @Repository
@@ -33,4 +27,10 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
     void incrementStock(@Param("id") UUID productId, @Param("qty") Integer qty);
 
 
+    @Query(value = "SELECT id FROM products ORDER BY random() LIMIT 1", nativeQuery = true)
+    UUID findRandomId();
+
+    @Modifying
+    @Query("update Product p set p.count = p.count + 1 where p.id = :id and p.count <= 10")
+    int incrementCount(UUID id);
 }

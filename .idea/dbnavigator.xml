@@ -9,6 +9,24 @@
     <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
+  <component name="DBNavigator.Project.DataExportManager">
+    <export-instructions>
+      <create-header value="true" />
+      <friendly-headers value="false" />
+      <quote-values-containing-separator value="true" />
+      <quote-all-values value="false" />
+      <value-separator value="," />
+      <begin-quote value="&quot;" />
+      <end-quote value="&quot;" />
+      <file-name value="Result 1.csv" />
+      <file-location value="C:\Users\mqwerq\Downloads" />
+      <scope value="SELECTION" />
+      <destination value="FILE" />
+      <format value="CSV" />
+      <charset value="UTF-8" />
+      <charset value="UTF-8" />
+    </export-instructions>
+  </component>
   <component name="DBNavigator.Project.DatabaseBrowserManager">
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
@@ -41,16 +59,19 @@ DROP TABLE revinfo CASCADE;
 CREATE TABLE revinfo (
     rev SERIAL PRIMARY KEY,
     revtstmp BIGINT
-);]]></console>
+);
+
+SELECT id FROM products;
+SELECT 
+    (SELECT SUM(count) FROM products) as total_stock,
+    (SELECT COUNT(*) FROM products WHERE count = 0) as empty_products;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" object-ref="schemas/public/tables/products" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" />

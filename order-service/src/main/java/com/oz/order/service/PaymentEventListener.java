@@ -5,6 +5,7 @@ import com.oz.common.dto.PaymentRequestEvent;
 import com.oz.order.enums.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,17 +15,22 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PaymentEventListener {
     private final OrderOperationService orderOperationService;
+    private final FutureService futureService;
+
     @KafkaListener(topics = "payment-success")
     @Transactional
     public void handlePaymentSuccess(PaymentRequestEvent event){
         orderOperationService.updateOrderStatus(event.orderId(), OrderStatus.COMPLETED);
         log.info("[{}] Заказ оплачен успешно.",event.orderId());
+        futureService.complete(event.orderId(),ResponseEntity.ok().body("Заказ успешно обработан и оплачен"));
     }
     @KafkaListener(topics = "payment-failed")
     @Transactional
     public void handlePaymentFailed(PaymentFailedEvent event) {
         log.warn("Оплата не прошла. Отменяем заказ: {}", event.orderId());
         orderOperationService.cancelOrder(event.orderId(), "ERROR_PAYMENT");
+        futureService.complete(event.orderId(),ResponseEntity.badRequest().body("Ошибка оплаты"));
+
 
     }
 

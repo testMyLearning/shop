@@ -41,8 +41,8 @@ public class ProductServiceOperation {
 
     @Transactional
     @CacheEvict(value = "products", allEntries = true)
-    public void updateProducts(@Valid UpdateProductDto productDto, UUID id) {
-        Product findProduct = productRepository.findByIdWithLock(id)
+    public void updateProducts(@Valid UpdateProductDto productDto, UUID productId) {
+        Product findProduct = productRepository.findByIdWithLock(productId)
                 .orElseThrow(() -> new CustomException("Не найден продукт"));
         productMapper.updateProductFromDTO(productDto, findProduct);
 

@@ -16,8 +16,8 @@ public class OutOfStockStrategy implements CancelledStrategy {
     @Override
     public void handle(InventoryFailedEvent event) {
         log.info("Ошибка из паттерна стратегии out_of_stock");
-        orderRepository.updateStatus(event.id(), OrderStatus.ERROR_OUT_OF_STOCKS);
-        log.error("Ошибка при заказе товара с id: {} ",event.productId());
+        orderRepository.updateStatus(event.orderId(), OrderStatus.ERROR_OUT_OF_STOCKS);
+        log.error("Ошибка при заказе товара с orderId: {} ",event.productId());
     }
 
 

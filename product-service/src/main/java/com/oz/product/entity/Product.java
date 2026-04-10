@@ -60,4 +60,6 @@ public class Product extends AbstractProduct {
     public int hashCode() {
         return Objects.hashCode(getId());
     }
+
+   
 }

@@ -5,8 +5,9 @@ spring:
     password: postgres
     driver-class-name: org.postgresql.Driver
     hikari:
-      maximum-pool-size: 20
+      maximum-pool-size: 50
       minimum-idle: 5
+      connection-timeout: 5000
 
   jpa:
     hibernate:
@@ -14,9 +15,13 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        generate_statistics: true
-        format_sql: true
+      generate_statistics: true
+      format_sql: true
 
   liquibase:
     enabled: false
     change-log: classpath:liquibase/changelog-master.yml
+
+  threads:
+    virtual:
+      enabled: true

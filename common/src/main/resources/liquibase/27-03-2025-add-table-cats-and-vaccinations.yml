@@ -14,7 +14,7 @@ databaseChangeLog:
             tableName: cats
             columns:
               - column:
-                  name: id
+                  name: orderId
                   type: BIGINT
                   constraints:
                     primaryKey: true
@@ -40,7 +40,7 @@ databaseChangeLog:
             tableName: vaccinations
             columns:
               - column:
-                  name: id
+                  name: orderId
                   type: BIGINT
                   constraints:
                     primaryKey: true
@@ -66,5 +66,5 @@ databaseChangeLog:
             baseColumnNames: cat_id
             constraintName: fk_vax_cat
             referencedTableName: cats
-            referencedColumnNames: id
+            referencedColumnNames: orderId
             onDelete: CASCADE

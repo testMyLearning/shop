@@ -9,6 +9,7 @@ import com.oz.order.enums.OrderStatus;
 import com.oz.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ public class InventoryOrderResponseListener {
     private final OrderOperationService orderOperationService;
     private final OrderRepository orderRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final FutureService futureService;
 
 
     @KafkaListener(topics = "inventory-reserved")
@@ -44,7 +46,8 @@ public class InventoryOrderResponseListener {
     @Transactional
     public void handleInventoryFailed(InventoryFailedEvent event) {
         log.info("[INVENTORY FAILED] Ошибка при резервировании товара. Закрытие заявки");
-        orderOperationService.cancelOrder(event.id(),"OUT_OF_STOCK");
+        orderOperationService.cancelOrder(event.orderId(),"OUT_OF_STOCK");
+        futureService.complete(event.orderId(),ResponseEntity.badRequest().body("Товар закончился"));
 
     }
 
