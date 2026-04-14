@@ -1,23 +1,21 @@
 package com.oz.order.controller;
 
-import com.oz.order.dto.Order;
 import com.oz.common.dto.OrderRequest;
+import com.oz.order.dto.Order;
 import com.oz.order.service.FutureService;
 import com.oz.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -35,7 +33,7 @@ public class OrderController {
             @AuthenticationPrincipal Jwt jwt) {
         String keycloakId = jwt.getSubject();
         CompletableFuture<ResponseEntity<String>> future = new CompletableFuture<>();
-        UUID orderId = orderService.createOrder(keycloakId, request);
+        UUID orderId = orderService.testSemaphore(keycloakId, request);
         futureService.register(orderId,future);
         try {
             return future.get(7, TimeUnit.SECONDS);

@@ -38,6 +38,7 @@ public class RedisConfig {
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         // Настраиваем параметры кэша
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
+
                 .entryTtl(Duration.ofMinutes(10)) // Время жизни
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));

@@ -22,8 +22,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @Getter
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
-@Audited
+//@EntityListeners(AuditingEntityListener.class)
+//@Audited
 @EqualsAndHashCode
 public abstract class AbstractProduct {
     protected String name;

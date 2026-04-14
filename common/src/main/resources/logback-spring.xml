@@ -42,10 +42,18 @@
     <logger name="org.hibernate.engine.internal.StatisticalLoggingSessionEventListener" level="INFO" />
     <logger name="org.apache.kafka" level="WARN" />
     <logger name="org.springframework.kafka" level="WARN" />
-    <logger name="org.springframework.transaction" level="INFO" />
+    <logger name="org.springframework.transaction" level="debug" />
     <logger name="com.oz.gateway" level="DEBUG" />
     <logger name="org.springframework.cloud.gateway" level="INFO" />
     <logger name="org.springframework.security" level="INFO" />
     <logger name="org.hibernate.envers" level="DEBUG" />
     <logger name="org.hibernate.engine.spi" level="DEBUG" />
+    <!-- Отслеживаем создание и коммит каждой транзакции -->
+    <logger name="org.springframework.transaction" level="DEBUG" />
+
+    <!-- Отслеживаем взятие и возврат коннектов в пул Hikari -->
+    <logger name="com.zaxxer.hikari" level="DEBUG" />
+
+    <!-- Важно: логируем только саму работу менеджера транзакций -->
+    <logger name="org.springframework.orm.jpa.JpaTransactionManager" level="DEBUG" />
 </configuration>

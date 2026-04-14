@@ -29,8 +29,8 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
 
     @Query(value = "SELECT id FROM products ORDER BY random() LIMIT 1", nativeQuery = true)
     UUID findRandomId();
-
+    @Transactional
     @Modifying
-    @Query("update Product p set p.count = p.count + 1 where p.id = :id and p.count <= 10")
-    int incrementCount(UUID id);
+    @Query("UPDATE Product p SET p.count = p.count + 1 WHERE p.id = (SELECT p2.id FROM Product p2 ORDER BY RANDOM() LIMIT 1)")
+    int incrementCount();
 }

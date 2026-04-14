@@ -64,14 +64,21 @@ CREATE TABLE revinfo (
 SELECT id FROM products;
 SELECT 
     (SELECT SUM(count) FROM products) as total_stock,
-    (SELECT COUNT(*) FROM products WHERE count = 0) as empty_products;]]></console>
+    (SELECT COUNT(*) FROM products WHERE count = 0) as empty_products;
+
+select count(id) from orders where status='PENDING';
+
+create index idx_order_status on orders(status);
+SHOW max_connections;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" object-ref="consoles/Connection" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="ae1693f8-8f3e-4c1b-a509-f75b418bbe2b" />

@@ -24,8 +24,8 @@ import java.util.UUID;
         @Index(name = "idx_products_color", columnList = "color"),
         @Index(name = "idx_products_typeOfThing", columnList = "typeOfThing")
 })
-@Audited
-@AuditOverride(forClass = AbstractProduct.class)
+//@Audited
+//@AuditOverride(forClass = AbstractProduct.class)
 @Getter
 @Setter
 @NoArgsConstructor

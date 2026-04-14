@@ -10,6 +10,7 @@ import com.oz.product.repository.ProductRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +47,10 @@ public class ProductServiceOperation {
                 .orElseThrow(() -> new CustomException("Не найден продукт"));
         productMapper.updateProductFromDTO(productDto, findProduct);
 
+    }
+    @Cacheable(value = "products", key = "#id")
+    public Product getOneByID(UUID id){
+        return productRepository.findById(id).orElseThrow();
     }
 
 }

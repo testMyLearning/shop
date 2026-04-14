@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import java.util.concurrent.Semaphore;
 
 @Service
 @Slf4j
@@ -14,20 +14,25 @@ import java.util.UUID;
 public class ServiceTestAddProducts {
 
     private final ProductRepository productRepository;
+    private final Semaphore semaphore = new Semaphore(30);
 
 
-    @Transactional
     public void addProduct() {
-        UUID randomId = productRepository.findRandomId();
-
-        if (randomId != null) {
-            int rows = productRepository.incrementCount(randomId);
+        try {
+            semaphore.acquire();
+            int rows = productRepository.incrementCount();
             if (rows > 0) {
                 log.info("Успешно добавлено");
             } else {
-                log.warn("Лимит достигнут для {}", randomId);
+                log.warn("Лимит достигнут");
             }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            semaphore.release();
         }
 
     }
+
+
 }

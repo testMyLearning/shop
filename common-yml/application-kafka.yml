@@ -8,9 +8,10 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: all
-      retries: 3
+      retries: 2147483647
+      transaction-id-prefix: "tx-order-"
+      enable-idempotence: true
       properties:
-        enable.idempotence: true
         # Эта настройка важна, чтобы Jackson не добавлял лишние заголовки типов
         spring.json.add.type.headers: true
         linger.ms: 10
@@ -27,4 +28,5 @@ spring:
     listener:
       observation-enabled: true
       concurrency: 3
+
 

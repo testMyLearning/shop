@@ -5,6 +5,7 @@ import com.oz.common.dto.PaymentFailedEvent;
 import com.oz.common.dto.PaymentRequestEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -18,7 +19,7 @@ public class PaymentEventListener {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @EventListener
     public void handleSuccessPaymentEvent( PaymentRequestEvent payment) {
 
         kafkaTemplate.send("payment-success",payment.orderId().toString(),payment);

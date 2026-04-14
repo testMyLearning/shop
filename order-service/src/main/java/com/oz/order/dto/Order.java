@@ -1,5 +1,6 @@
 package com.oz.order.dto;
 
+import com.oz.common.exception.CustomException;
 import com.oz.order.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "orders")
 @Data
-@Audited
+//@Audited
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -36,5 +37,8 @@ public class Order {
 
     @Version
     private Long version;
+
+
+
 
 }
