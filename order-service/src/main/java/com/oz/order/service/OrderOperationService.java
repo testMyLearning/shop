@@ -61,7 +61,7 @@ public class OrderOperationService {
     }
 
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW) // Важно: новая транзакция!
+    @Transactional// Важно: новая транзакция!
     public void cancelOrder(UUID orderId, String reason) {
         log.info("Пришла команда ОТМЕНИТЬ ЗАКАЗ");
         Order order = orderRepository.findById(orderId).orElseThrow();

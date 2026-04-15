@@ -2,12 +2,14 @@ package com.oz.cart.entity;
 
 import com.oz.product.dto.ProductDto;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.util.List;
     @Data
+    @NoArgsConstructor
     @RedisHash(value = "cart", timeToLive = 60*15)
     public class Cart {
 
@@ -15,9 +17,6 @@ import java.util.List;
         private String id;
 
         private List<ProductDto> list;
-
-        @Version
-        private Long version;
 
         public Cart(String id, List<ProductDto> list) {
             this.id = id;

@@ -13,7 +13,7 @@ public class KeycloakConfig {
     @Value("${keycloak.url}")
     private String keycloakUrl;
 
-    @Value("${keycloak.admin.client-orderId}")
+    @Value("${keycloak.admin.client-id}")
     private String adminClientId;
 
     @Value("${keycloak.admin.client-secret}")

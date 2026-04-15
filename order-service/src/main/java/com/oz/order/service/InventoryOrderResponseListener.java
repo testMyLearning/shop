@@ -36,8 +36,7 @@ public class InventoryOrderResponseListener {
 
     @RetryableTopic(attempts="3",backoff = @Backoff(delay = 2000,multiplier=2.0,maxDelay = 10000L),
             include = {CustomException.class, RuntimeException.class}, // на какие ошибки ретраить
-            dltStrategy = DltStrategy.FAIL_ON_ERROR,
-            exclude = {ValidationException.class}
+            dltStrategy = DltStrategy.FAIL_ON_ERROR
     )
     @KafkaListener(topics = "inventory-reserved")
     @Transactional
